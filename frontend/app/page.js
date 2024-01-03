@@ -1,7 +1,8 @@
 "use client";
+import { useState } from "react";
 import Checkbox from "./component/Checkbox.js";
-import Box from './component/Box.js'
-import {Card, Skeleton} from "@nextui-org/react";
+import Recipes from "./component/Recipes.js";
+import Sidebar from "./component/Sidebar.js";
 
 export default function Home() {
   const fruits = [
@@ -70,19 +71,29 @@ export default function Home() {
 
 
 
-  let selectedfruit = []
+  const [selectedIngredients,setSelectedIngredients] = useState(new Set());
+
+  function deleteIngredient(ingredient) {
+    selectedIngredients.delete(ingredient);
+    setSelectedIngredients(new Set(selectedIngredients));
+  }
+
+  function addIngredient(ingredient) {
+    selectedIngredients.add(ingredient);
+    setSelectedIngredients(new Set(selectedIngredients));
+  }
+
   function togglefruit(event) {
-    let fruit = event.target.textContent;
-    const index = selectedfruit.indexOf(fruit);
-    index === -1 ? selectedfruit.push(fruit) : selectedfruit.splice(index, 1);
-    console.log(selectedfruit);
+    let ingredient = event.target.textContent;
+    selectedIngredients.has(ingredient) ? deleteIngredient(ingredient)  : addIngredient(ingredient);
+    console.log([...selectedIngredients]);
   }
   return (
-    <main className="min-h-screen max-w-6xl p-5 m-auto">
+    <main className="">
       <div className="flex gap-5">
-        <div className="w-1/3">
-          <h2 className="text-2xl font-bold m-5">Ingredients</h2>
-          <Box category={["Fruits","Vegetables"]}>
+        <div className="w-5/12">
+          <h2 className="text-2xl font-bold text-center">Ingredients</h2>
+          <Sidebar category={["Fruits","Vegetables"]}>
             {[fruits.map((fruit) => (
               <Checkbox key={fruit} className="m-1 cursor-pointer" onClick={togglefruit}>
                 {fruit}
@@ -94,32 +105,11 @@ export default function Home() {
               </Checkbox>
             ))
             ]}
-          </Box>
+          </Sidebar>
         </div>
-        <div className="w-2/3">
-          <h2 className="text-2xl font-bold m-5 text-center">Recipes</h2>
-          <div className="w-full h-full bg-white shadow-xl border border-slate-200 rounded-lg flex flex-wrap">
-            {[...Array(10)].map((_, i) => (
-              <div key={i} className="w-fit h-fit flex-1 m-auto">
-                <Card className="w-[200px] space-y-5 p-4 m-auto" radius="2xl">
-                  <Skeleton className="rounded-lg">
-                    <div className="h-24 rounded-lg bg-default-300"></div>
-                  </Skeleton>
-                  <div className="space-y-3">
-                    <Skeleton className="w-3/5 rounded-lg">
-                      <div className="h-3 w-3/5 rounded-lg bg-default-200"></div>
-                    </Skeleton>
-                    <Skeleton className="w-4/5 rounded-lg">
-                      <div className="h-3 w-4/5 rounded-lg bg-default-200"></div>
-                    </Skeleton>
-                    <Skeleton className="w-2/5 rounded-lg">  
-                      <div className="h-3 w-2/5 rounded-lg bg-default-300"></div>
-                    </Skeleton>
-                  </div>
-                </Card>
-              </div>
-            ))}
-          </div>
+        <div className="w-10/12">
+          {selectedIngredients.size === 0 && <div className="flex justify-center h-full"><h1 className="fixed top-[50%] text-center font-extrabold text-2xl text-gray-400">Select Ingredients</h1></div>}
+          {selectedIngredients.size >0 && <Recipes selectedIngredients={selectedIngredients}/>}
         </div>
       </div>
     </main>
