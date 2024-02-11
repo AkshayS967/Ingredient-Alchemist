@@ -7,8 +7,12 @@ from psycopg2 import extras
 
 
 def establish_db_conn():
-    conn = psycopg2.connect(database="recipe", user='postgres', password='akshay123', host='127.0.0.1', port= '5432')
-    cursor = conn.cursor(cursor_factory=extras.DictCursor)
+    try:
+        conn = psycopg2.connect(database="recipe", user='postgres', password='akshay123', host='localhost', port= '5432')
+        cursor = conn.cursor(cursor_factory=extras.DictCursor)
+    except Exception as e:
+        print(e)
+    
     return conn, cursor
 
 conn, cursor = establish_db_conn()
