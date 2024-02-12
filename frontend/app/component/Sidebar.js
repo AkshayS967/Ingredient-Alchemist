@@ -12,7 +12,7 @@ export default function Sidebar({ children, category }) {
     content: "text-small px-2",
   };
   return (
-    <ScrollShadow className="h-[47.5rem] overflow-scroll p-6">
+    <ScrollShadow className="h-[44rem] overflow-scroll p-1 rounded-2xl">
       <Accordion
         showDivider={false}
         defaultExpandedKeys={["1", "2"]}

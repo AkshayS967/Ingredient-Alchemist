@@ -4,28 +4,22 @@ import {ScrollShadow} from "@nextui-org/react";
 import Link from "next/link";
 import Server from "../Server";
 
-export default function Recipes({ selectedIngredients }) {
+export default function Recipes({ selectedIngredientsArray }) {
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setLoading(true);
     const server = new Server();
-    server.getRecipes([...selectedIngredients]).then((res) => {
+    server.getRecipes(selectedIngredientsArray).then((res) => {
       setRecipes(res.data);
       setLoading(false);
     });
-  }, [selectedIngredients]);
-
-  function toggleRecipe() {
-    console.log(selectedIngredients);
-  }
-
-  function showRecipe() {}
+  }, [selectedIngredientsArray]);
 
   return (
     <>
-      <h2 onClick={toggleRecipe} className="text-2xl font-bold text-center">
+      <h2 className="text-2xl font-bold text-center">
         Recipes
       </h2>
       <ScrollShadow className="bg-white h-[47.5rem] overflow-scroll grid-cols-1 grid md:grid-cols-2 lg:grid-cols-3 gap-5 p-6">
