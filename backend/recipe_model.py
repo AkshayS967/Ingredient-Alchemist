@@ -4,11 +4,20 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import linear_kernel
 import psycopg2
 from psycopg2 import extras
+import os
+from dotenv import load_dotenv
 
+load_dotenv()
+
+DATABASE = os.getenv('DATABASE')
+USER = os.getenv('USER')
+PASSWORD = os.getenv('PASSWORD')
+HOST = os.getenv('HOST')
+PORT = os.getenv('PORT')
 
 def establish_db_conn():
     try:
-        conn = psycopg2.connect(database="recipe", user='postgres', password='akshay123', host='localhost', port= '5432')
+        conn = psycopg2.connect(database=DATABASE, user=USER, password=PASSWORD, host=HOST, port=PORT)
         cursor = conn.cursor(cursor_factory=extras.DictCursor)
     except Exception as e:
         print(e)
