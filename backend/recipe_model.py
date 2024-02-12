@@ -9,15 +9,18 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+PHASE = os.getenv('PHASE')
 DATABASE = os.getenv('DATABASE')
-USER = os.getenv('USER')
 PASSWORD = os.getenv('PASSWORD')
 HOST = os.getenv('HOST')
 PORT = os.getenv('PORT')
 
 def establish_db_conn():
     try:
-        conn = psycopg2.connect(database=DATABASE, user=USER, password=PASSWORD, host=HOST, port=PORT)
+        if PHASE == 'dev':
+            conn = psycopg2.connect(database=DATABASE, user='postgres', password=PASSWORD, host=HOST, port=PORT)
+        else:
+            conn = psycopg2.connect(database=DATABASE, user='postgres', password=PASSWORD, host=HOST, port=PORT, sslmode='require', sslrootcert='ap-south-1-bundle.pem')
         cursor = conn.cursor(cursor_factory=extras.DictCursor)
     except Exception as e:
         print(e)
