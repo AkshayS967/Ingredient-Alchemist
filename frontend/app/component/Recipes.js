@@ -51,12 +51,14 @@ export default function Recipes({ selectedIngredientsArray }) {
                 <Card
                   className="p-3 aspect-[3/4] cursor-pointer border-4 hover:border-gray-300 hover:scale-[101%]"
                   radius="2xl"
-                >{ recipe.img_url &&
+                >
+                  { recipe.img_url &&
                   <Image
                     src={recipe.img_url}
                     alt={recipe.title}
-                    width={200}
-                    height={200}
+                    width={100}
+                    height={100}
+                    style={{objectFit: "cover", aspectRatio: "16/9", height: "7rem"}}
                     className="rounded-lg mb-3 w-full h-36 object-cover"
                   />}
                   { !recipe.img_url &&
