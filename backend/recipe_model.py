@@ -30,7 +30,10 @@ def establish_db_conn():
 conn, cursor = establish_db_conn()
 
 def get_recipes():
-    cursor.execute("""select * from recipe""")
+    if PHASE == 'dev':
+        cursor.execute("""select * from recipe""")
+    else:
+        cursor.execute("""select * from recipe limit 10000""")
     recipes = cursor.fetchall()
     return recipes
 

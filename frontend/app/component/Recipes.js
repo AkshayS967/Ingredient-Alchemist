@@ -1,6 +1,6 @@
-import { Card, Skeleton } from "@nextui-org/react";
+import { Card, Skeleton,ScrollShadow } from "@nextui-org/react";
 import { useEffect, useState } from "react";
-import {ScrollShadow} from "@nextui-org/react";
+import Image from "next/image";
 import Link from "next/link";
 import Server from "../Server";
 
@@ -51,12 +51,19 @@ export default function Recipes({ selectedIngredientsArray }) {
                 <Card
                   className="p-3 aspect-[3/4] cursor-pointer border-4 hover:border-gray-300 hover:scale-[101%]"
                   radius="2xl"
-                >
-                  <img
+                >{ recipe.img_url &&
+                  <Image
                     src={recipe.img_url}
                     alt={recipe.title}
+                    width={200}
+                    height={200}
                     className="rounded-lg mb-3 w-full h-36 object-cover"
-                  />
+                  />}
+                  { !recipe.img_url &&
+                    <Skeleton className="rounded-lg mb-3">
+                      <div className="h-36 rounded-lg bg-default-300"></div>
+                    </Skeleton>
+                  }
                   <div className="space-y-3">
                     <h3 className="text-xl font-bold line-clamp-2">
                       {recipe.title}

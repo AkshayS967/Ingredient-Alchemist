@@ -1,15 +1,21 @@
 
+import Image from "next/image";
+
 export default async function Recipe({ params }) {
   const recipe = await getRecipe(params.recipe);
 
   return (
     <div className="h-[calc(100vh-5rem)] overflow-scroll max-w-[50rem] m-auto shadow-lg p-8">
       <h1 className="text-3xl font-bold pb-5">{recipe.title}</h1>
-      <img
+      { recipe.img_url &&
+        <Image
         src={recipe.img_url}
         alt={recipe.title}
+        width={0}
+        height={0}
+        sizes="100vw"
         className="w-auto h-[300px] rounded-lg"
-      />
+      />}
       <p className="text-md my-5">{recipe.description}</p>
       <h2 className="text-2xl my-3">Ingredients</h2>
       <ul className="text-md my-3">
