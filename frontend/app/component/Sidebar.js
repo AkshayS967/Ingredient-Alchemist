@@ -1,5 +1,5 @@
 import { Accordion, AccordionItem } from "@nextui-org/react";
-import {ScrollShadow} from "@nextui-org/react";
+import { ScrollShadow } from "@nextui-org/react";
 import Image from "next/image";
 
 export default function Sidebar({ children, category }) {
@@ -11,42 +11,30 @@ export default function Sidebar({ children, category }) {
     indicator: "text-medium",
     content: "text-small px-2",
   };
+
+  console.log(category.map((_, index) => (index + 1).toString()));
+
   return (
     <ScrollShadow className="h-[44rem] overflow-scroll p-1 rounded-2xl">
       <Accordion
         showDivider={false}
-        defaultExpandedKeys={["1", "2"]}
+        defaultExpandedKeys={category.map((_, index) => index.toString())}
         className="p-2 flex flex-col gap-1 w-full"
         variant="shadow"
         itemClasses={itemClasses}
       >
-        <AccordionItem
-          key="1"
-          aria-label="Accordion 1"
-          startContent={
-            <Image src="/fruits.png" width={30} height={30} alt="fruit" />
-          }
-          title={category[0]}
-          keepContentMounted
-        >
-          <div className="flex flex-wrap">{children[0]}</div>
-        </AccordionItem>
-        <AccordionItem
-          key="2"
-          aria-label="Accordion 1"
-          startContent={
-            <Image
-              src="/vegetables.png"
-              width={30}
-              height={30}
-              alt="vegetables"
-            />
-          }
-          title={category[1]}
-          keepContentMounted
-        >
-          <div className="flex flex-wrap">{children[1]}</div>
-        </AccordionItem>
+        {category.map((name, index) => (
+          <AccordionItem
+            key={index}
+            startContent={
+              <Image src={`/${name}.png`} width={30} height={30} alt={name} />
+            }
+            title={name}
+            keepContentMounted
+          >
+            <div className="flex flex-wrap">{children[index]}</div>
+          </AccordionItem>
+        ))}
       </Accordion>
     </ScrollShadow>
   );
