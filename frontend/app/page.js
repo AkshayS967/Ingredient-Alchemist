@@ -6,69 +6,14 @@ import Sidebar from "./component/Sidebar.js";
 import { Tabs, Tab, Card, CardBody, Button, Chip } from "@nextui-org/react";
 
 export default function Home() {
-  const fruits = [
-    "Apple",
-    "Banana",
-    "Orange",
-    "Grapes",
-    "Strawberry",
-    "Mango",
-    "Pineapple",
-    "Kiwi",
-    "Blueberry",
-    "Lemon",
-    "Lime",
-    "Raspberry",
-    "Watermelon",
-    "Cherry",
-    "Pear",
-    "Apricot",
-    "Peach",
-    "Plum",
-    "Cranberry",
-    "Coconut",
-    "Avocado",
-    "Blackberry",
-    "Pomegranate",
-    "Papaya",
-    "Fig",
-    "Guava",
-    "Passion Fruit",
-    "Lychee",
-    "Dragon Fruit",
-  ];
-
-  const vegetables = [
-    "Carrot",
-    "Broccoli",
-    "Cucumber",
-    "Spinach",
-    "Tomato",
-    "Bell Pepper",
-    "Lettuce",
-    "Zucchini",
-    "Eggplant",
-    "Cauliflower",
-    "Green Beans",
-    "Peas",
-    "Radish",
-    "Onion",
-    "Garlic",
-    "Sweet Potato",
-    "Asparagus",
-    "Mushroom",
-    "Celery",
-    "Cabbage",
-    "Kale",
-    "Pumpkin",
-    "Brussels Sprouts",
-    "Artichoke",
-    "Beet",
-    "Turnip",
-    "Leek",
-    "Okra",
-    "Rutabaga",
-  ];
+  const ingredients = { 
+    Fruits: ["Apple", "Banana", "Orange", "Grapes", "Strawberry", "Mango", "Pineapple", "Kiwi", "Blueberry", "Lemon", "Lime", "Raspberry", "Watermelon", "Cherry", "Pear", "Apricot", "Peach", "Plum", "Cranberry", "Coconut", "Avocado", "Blackberry", "Pomegranate", "Papaya", "Fig", "Guava", "Passion Fruit", "Lychee", "Dragon Fruit"], 
+    Vegetables: ["Carrot", "Broccoli", "Cucumber", "Spinach", "Tomato", "Bell Pepper", "Lettuce", "Zucchini", "Eggplant", "Cauliflower", "Green Beans", "Peas", "Radish", "Onion", "Garlic", "Sweet Potato", "Asparagus", "Mushroom", "Celery", "Cabbage", "Kale", "Pumpkin", "Brussels Sprouts", "Artichoke", "Beet", "Turnip", "Leek", "Okra", "Rutabaga"], 
+    Grains: ["Wheat", "Rice", "Barley", "Quinoa", "Oats", "Corn", "Rye", "Bulgur", "Millet", "Buckwheat", "Amaranth", "Farro", "Sorghum"], 
+    Proteins: ["Chicken", "Beef", "Pork", "Salmon", "Tuna", "Cod", "Shrimp", "Tofu", "Tempeh", "Lentils", "Black beans", "Kidney beans", "Chickpeas", "Eggs", "Turkey", "Quorn", "Duck", "Lamb", "Venison"], 
+    Dairy: ["Milk", "Cheddar", "Mozzarella", "Parmesan", "Yogurt", "Butter", "Cream", "Cottage Cheese", "Sour Cream", "Cream Cheese", "Ricotta", "Feta", "Goat Cheese", "Mascarpone"], "Herbs and Spices": ["Basil", "Parsley", "Cilantro", "Thyme", "Rosemary", "Oregano", "Mint", "Dill", "Sage", "Bay Leaves", "Chili Powder", "Paprika", "Cumin", "Turmeric", "Ginger", "Nutmeg", "Cloves", "Cardamom", "Allspice", "Coriander"], 
+    Condiments: ["Ketchup", "Mustard", "Mayonnaise", "Soy Sauce", "BBQ Sauce", "Worcestershire Sauce", "Hot Sauce", "Honey", "Maple Syrup", "Balsamic Vinegar", "Apple Cider Vinegar", "Red Wine Vinegar", "White Wine Vinegar", "Salsa", "Pesto", "Tahini", "Fish Sauce", "Teriyaki Sauce", "Hoisin Sauce"] 
+  };
 
   const selectedIngredients = useRef(new Set());
   const [selectedIngredientsArray, setSelectedIngredientsArray] = useState([]);
@@ -85,12 +30,23 @@ export default function Home() {
     setSelectedIngredientsArray([...selectedIngredients.current]);
   }
 
-  function togglefruit(event) {
+  function toggleIngredient(event) {
     let ingredient = event.target.textContent;
     selectedIngredients.current.has(ingredient)
       ? deleteIngredient(ingredient)
       : addIngredient(ingredient);
   }
+
+  function addIngredientFromCustomInput() {
+    addIngredient(customInputRef.current.value);
+    customInputRef.current.value = "";
+    setSelectedIngredientsArray([...selectedIngredients.current]);
+  }
+
+  function handleInputKeyDown(event) {
+    if (event.key === "Enter")  addIngredientFromCustomInput();
+  }
+  
   return (
     <main className="">
       <div className="flex gap-5">
@@ -105,27 +61,18 @@ export default function Home() {
             }}
           >
             <Tab key="predefined" title="Predefined">
-              <Sidebar category={["Fruits", "Vegetables"]}>
-                {[
-                  fruits.map((fruit) => (
+              <Sidebar category={Object.keys(ingredients)}>
+                {Object.entries(ingredients).map(([category, items]) =>
+                  items.map((item) => (
                     <Checkbox
-                      key={fruit}
+                      key={item}
                       className="m-1 cursor-pointer"
-                      onClick={togglefruit}
+                      onClick={toggleIngredient}
                     >
-                      {fruit}
+                      {item}
                     </Checkbox>
-                  )),
-                  vegetables.map((vegetable) => (
-                    <Checkbox
-                      key={vegetable}
-                      className="m-1 cursor-pointer"
-                      onClick={togglefruit}
-                    >
-                      {vegetable}
-                    </Checkbox>
-                  )),
-                ]}
+                  ))
+                )}
               </Sidebar>
             </Tab>
             <Tab key="custom" title="Custom">
@@ -136,18 +83,13 @@ export default function Home() {
                     type="text"
                     placeholder="Enter Ingredient"
                     ref={customInputRef}
+                    onKeyDown={handleInputKeyDown}
                   />
                   <Button
                     color="primary"
                     variant="flat"
                     className="font-bold bg-red-100 text-red-400"
-                    onClick={() => {
-                      addIngredient(customInputRef.current.value);
-                      customInputRef.current.value = "";
-                      setSelectedIngredientsArray([
-                        ...selectedIngredients.current,
-                      ]);
-                    }}
+                    onClick={addIngredientFromCustomInput}
                   >
                     Add Ingredient
                   </Button>
