@@ -1,6 +1,4 @@
-import React from "react";
-
-import { useCheckbox, Chip, VisuallyHidden, tv } from "@nextui-org/react";
+import { useCheckbox, Chip, tv } from "@nextui-org/react";
 
 const checkbox = tv({
   slots: {
@@ -32,9 +30,7 @@ export default function Checkbox(props) {
 
   return (
     <label {...getBaseProps()} {...props} >
-      <VisuallyHidden>
-        <input {...getInputProps()} />
-      </VisuallyHidden>
+      <input {...getInputProps()} className="hidden"/>
       <Chip
         classNames={{
           base: styles.base(),

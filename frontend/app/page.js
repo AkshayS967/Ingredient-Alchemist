@@ -50,7 +50,7 @@ export default function Home() {
   return (
     <main className="">
       <div className="flex gap-5">
-        <div className="w-5/12">
+        <div className="flex-auto w-4/12 h-[44rem]">
           <h2 className="text-2xl font-bold text-center">Ingredients</h2>
           <Tabs
             className="grid mt-2 px-1"
@@ -109,7 +109,7 @@ export default function Home() {
             </Tab>
           </Tabs>
         </div>
-        <div className="w-10/12">
+        <div className="flex-auto w-8/12">
           {selectedIngredientsArray.length === 0 && (
             <div className="flex justify-center h-full">
               <h1 className="fixed top-[50%] text-center font-extrabold text-2xl text-gray-400">

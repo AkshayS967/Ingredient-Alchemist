@@ -12,8 +12,6 @@ export default function Sidebar({ children, category }) {
     content: "text-small px-2",
   };
 
-  console.log(category.map((_, index) => (index + 1).toString()));
-
   return (
     <ScrollShadow className="h-[44rem] overflow-scroll p-1 rounded-2xl">
       <Accordion
