@@ -1,8 +1,17 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
+import { Tabs, Tab } from "@nextui-org/react";
+import { useState, useEffect } from "react";
+import Server from "../Server";
 
-export default function App() {
+export default function Header() {
+  const [selected, setSelected] = useState("1");
+
+  useEffect(() => {
+    Server.method = selected;
+  },[selected])
+
   return (
     <header>
       <nav className=" bg-red-400 shadow-lg h-14 w-full z-10">
@@ -16,6 +25,11 @@ export default function App() {
                 alt="logo"
               />
           </Link>
+          <Tabs selectedKey={selected} onSelectionChange={setSelected}>
+            <Tab key="1" title="Apriori"></Tab>
+            <Tab key="2" title="Vector DB"></Tab>
+            <Tab key="3" title="Gen AI"></Tab>
+          </Tabs>
           {/* <div className="w-10 h-10 rounded-full mr-5">
             <Image
               src="/account.png"

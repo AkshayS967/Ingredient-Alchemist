@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from recipe_model import get_recommended_recipes, get_recipe_by_name
+from vector_db import get_recipe_vector
 
 app = Flask(__name__)
 CORS(app)
@@ -9,7 +10,11 @@ CORS(app)
 def get_recipes():
     try:
         data = request.get_json(force=True)
-        res =  get_recommended_recipes(data['ingredients'])
+        if data['method'] == '1':
+            res = get_recommended_recipes(data['ingredients'])
+        elif data['method'] == '2':
+            res = get_recipe_vector(data['ingredients'])
+        
         return res
     
     except Exception as e:
