@@ -137,6 +137,7 @@ def generate_association_rules(frequent_itemsets, min_confidence):
     association_rules = []
 
     for itemset in frequent_itemsets:
+        recipe_ingredients = [recipe.split(',') for recipe in recipes]
         for antecedent in powerset(itemset):
             if len(antecedent) > 0:
                 consequent = itemset - antecedent
@@ -153,6 +154,7 @@ def generate_association_rules(frequent_itemsets, min_confidence):
     
 def recommend_recipes(given_ingredients, association_rules):
     recommended_recipes = []
+    recipe_ingredients = [recipe['ingredients'] for recipe in recipes]
 
     for rule in association_rules:
         if rule.antecedent.issubset(given_ingredients):
@@ -192,7 +194,6 @@ def get_suggested_recipes(ingredients):
     return recommended_recipe_list
 
 def get_recommended_recipes(ingredients):
-    
     user_input_ingredients = ','.join(ingredients)
     user_input_tfidf = tfidf_vectorizer.transform([user_input_ingredients])
     cosine_similarities = linear_kernel(user_input_tfidf, tfidf_matrix).flatten()
@@ -207,7 +208,10 @@ def get_recommended_recipes(ingredients):
     return recommeded_recipes
 
 def get_recipe_by_name(name):
-    cursor.execute("""select * from recipe where title = %s""", ([name]))
-    data = cursor.fetchall()
-    recipe = dict(data[0])
+    try:
+        cursor.execute("""select * from recipe where title = %s""", ([name]))
+        data = cursor.fetchall()
+        recipe = dict(data[0]) if data else {}
+    except Exception as e:
+        raise e
     return recipe
