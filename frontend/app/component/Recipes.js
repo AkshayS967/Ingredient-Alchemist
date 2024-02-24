@@ -2,20 +2,21 @@ import { Card, Skeleton, ScrollShadow } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import Server from "../Server";
+import { useRecipeAPI } from "../RecipeAPI";
 
-export default function Recipes({ selectedIngredientsArray }) {
+export default function Recipes() {
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { getRecipes, selectedIngredientsArray, method } = useRecipeAPI();
 
   useEffect(() => {
     setLoading(true);
-    Server.getRecipes(selectedIngredientsArray).then((res) => {
+    getRecipes().then((res) => {
       if (res.data.success == false) setRecipes([]);
       else setRecipes(res.data);
       setLoading(false);
     });
-  }, [selectedIngredientsArray]);
+  }, [method, selectedIngredientsArray]);
 
   return (
     <>

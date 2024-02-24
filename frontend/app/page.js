@@ -4,6 +4,7 @@ import Checkbox from "./component/Checkbox.js";
 import Recipes from "./component/Recipes.js";
 import Sidebar from "./component/Sidebar.js";
 import { Tabs, Tab, Card, CardBody, Button, Chip } from "@nextui-org/react";
+import { useRecipeAPI } from "./RecipeAPI.js";
 
 export default function Home() {
   const ingredients = { 
@@ -15,8 +16,7 @@ export default function Home() {
     Condiments: ["Ketchup", "Mustard", "Mayonnaise", "Soy Sauce", "BBQ Sauce", "Worcestershire Sauce", "Hot Sauce", "Honey", "Maple Syrup", "Balsamic Vinegar", "Apple Cider Vinegar", "Red Wine Vinegar", "White Wine Vinegar", "Salsa", "Pesto", "Tahini", "Fish Sauce", "Teriyaki Sauce", "Hoisin Sauce"] 
   };
 
-  const selectedIngredients = useRef(new Set());
-  const [selectedIngredientsArray, setSelectedIngredientsArray] = useState([]);
+  const { selectedIngredients, selectedIngredientsArray, setSelectedIngredientsArray } = useRecipeAPI();
   const customInputRef = useRef(null);
 
   function deleteIngredient(ingredient) {
@@ -118,7 +118,7 @@ export default function Home() {
             </div>
           )}
           {selectedIngredientsArray.length > 0 && (
-            <Recipes selectedIngredientsArray={selectedIngredientsArray} />
+            <Recipes/>
           )}
         </div>
       </div>
