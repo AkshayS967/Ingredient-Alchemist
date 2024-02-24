@@ -1,14 +1,16 @@
 from pinecone import Pinecone
 from sentence_transformers import SentenceTransformer
 from recipe_model import get_recipe_by_name
+import os
 
 model = SentenceTransformer('all-mpnet-base-v2')
+PINECONE_API_KEY = os.getenv('PINECONE_API_KEY')
 
 def get_recipe_vector(ingredients):
     ingredients = list(map(lambda x: '"' + x + '"', ingredients))
     ingredients_str = ",".join(ingredients)
     ingredients_str = "{"+ingredients_str+"}"
-    pc = Pinecone(api_key='8826d29b-4906-4625-81bd-0be8cadb92f3')
+    pc = Pinecone(api_key=PINECONE_API_KEY)
     index = pc.Index('ingredients')
 
     search_vector = model.encode(ingredients_str)

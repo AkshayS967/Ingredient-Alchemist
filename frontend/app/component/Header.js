@@ -2,15 +2,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Tabs, Tab } from "@nextui-org/react";
-import { useState, useEffect } from "react";
-import Server from "../Server";
+import { useRecipeAPI } from "../RecipeAPI";
 
 export default function Header() {
-  const [selected, setSelected] = useState("1");
-
-  useEffect(() => {
-    Server.method = selected;
-  },[selected])
+  const { method, setMethod } = useRecipeAPI();
 
   return (
     <header>
@@ -25,7 +20,7 @@ export default function Header() {
                 alt="logo"
               />
           </Link>
-          <Tabs selectedKey={selected} onSelectionChange={setSelected}>
+          <Tabs selectedKey={method} onSelectionChange={setMethod}>
             <Tab key="1" title="Apriori"></Tab>
             <Tab key="2" title="Vector DB"></Tab>
             <Tab key="3" title="Gen AI"></Tab>
