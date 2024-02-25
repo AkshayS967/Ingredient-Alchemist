@@ -10,24 +10,24 @@ jobs:
     name: Git Pull and Deploy on AWS
     runs-on: ubuntu-latest
     steps:
-      - name: Set permissions for private key
-        run: |
-          echo "${{ secrets.EC2_PRIVATE_KEY }}" > key.pem
-          chmod 600 key.pem
-          
       - name: Git pull and restart processes
-        run: |
-          ssh -o StrictHostKeyChecking=no -i key.pem ${{ secrets.AWS_SERVER_IP }} './pull-and-restart-process.sh'
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER }}
+          username: ${{ secrets.AWS_SERVER_USERNAME }}
+          key: ${{ secrets.AWS_SERVER_PRIVATE_KEY }}
+          script: |
+            ./pull-and-restart-process.sh
   
   pull_and_deploy_on_azure:
     name: Git Pull and Deploy on Azure
     runs-on: ubuntu-latest
     steps:
-      - name: Set permissions for private key
-        run: |
-          echo "${{ secrets.AZURE_PRIVATE_KEY }}" > key.pem
-          chmod 600 key.pem
-          
       - name: Git pull and restart processes
-        run: |
-          ssh -o StrictHostKeyChecking=no -i key.pem ${{ secrets.AZURE_SERVER_IP }} './pull-and-restart-process.sh'
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.AZURE_SERVER_IP }}
+          username: ${{ secrets.AZURE_SERVER_USERNAME }}
+          key: ${{ secrets.AZURE_SERVER_PRIVATE_KEY }}
+          script: |
+            ./pull-and-restart-process.sh
