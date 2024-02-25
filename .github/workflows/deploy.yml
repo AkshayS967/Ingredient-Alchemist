@@ -6,8 +6,8 @@ on:
       - main
 
 jobs:
-  pull_and_deploy:
-    name: Git Pull and Deploy
+  pull_and_deploy_on_aws:
+    name: Git Pull and Deploy on AWS
     runs-on: ubuntu-latest
     steps:
       - name: Set permissions for private key
@@ -17,4 +17,17 @@ jobs:
           
       - name: Git pull and restart processes
         run: |
-          ssh -o StrictHostKeyChecking=no -i key.pem ${{ secrets.SERVER }} './pull-and-restart-process.sh'
+          ssh -o StrictHostKeyChecking=no -i key.pem ${{ secrets.AWS_SERVER_IP }} './pull-and-restart-process.sh'
+  
+  pull_and_deploy_on_azure:
+    name: Git Pull and Deploy on Azure
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set permissions for private key
+        run: |
+          echo "${{ secrets.AZURE_PRIVATE_KEY }}" > key.pem
+          chmod 600 key.pem
+          
+      - name: Git pull and restart processes
+        run: |
+          ssh -o StrictHostKeyChecking=no -i key.pem ${{ secrets.AZURE_SERVER_IP }} './pull-and-restart-process.sh'
