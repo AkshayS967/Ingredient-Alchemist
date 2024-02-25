@@ -18,7 +18,7 @@ def get_recipes():
         return res
     
     except Exception as e:
-        return jsonify({'success': False, 'error': str(e)})
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 @app.route('/api/recipe', methods=['POST'])
 def get_recipe():
@@ -28,7 +28,7 @@ def get_recipe():
         return res
     
     except Exception as e:
-        return jsonify({'success': False, 'error': str(e)})
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 
 if __name__ == "__main__":
