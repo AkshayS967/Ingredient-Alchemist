@@ -6,15 +6,28 @@ on:
       - main
 
 jobs:
-  pull_and_deploy:
-    name: Git Pull and Deploy
+  pull_and_deploy_on_aws:
+    name: Git Pull and Deploy on AWS
     runs-on: ubuntu-latest
     steps:
       - name: Git pull and restart processes
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.SERVER }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          host: ${{ secrets.AWS_SERVER_IP }}
+          username: ${{ secrets.AWS_SERVER_USERNAME }}
+          key: ${{ secrets.AWS_SERVER_PRIVATE_KEY }}
+          script: |
+            ./pull-and-restart-process.sh
+  
+  pull_and_deploy_on_azure:
+    name: Git Pull and Deploy on Azure
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git pull and restart processes
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.AZURE_SERVER_IP }}
+          username: ${{ secrets.AZURE_SERVER_USERNAME }}
+          key: ${{ secrets.AZURE_SERVER_PRIVATE_KEY }}
           script: |
             ./pull-and-restart-process.sh
