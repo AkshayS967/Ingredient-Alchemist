@@ -13,7 +13,7 @@ jobs:
       - name: Git pull and restart processes
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.SERVER }}
+          host: ${{ secrets.AWS_SERVER_IP }}
           username: ${{ secrets.AWS_SERVER_USERNAME }}
           key: ${{ secrets.AWS_SERVER_PRIVATE_KEY }}
           script: |
