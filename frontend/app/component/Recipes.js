@@ -22,6 +22,7 @@ export default function Recipes() {
     <>
       <h2 className="text-2xl font-bold text-center">Recipes</h2>
       <ScrollShadow className="bg-white h-[47.5rem] overflow-scroll grid-cols-1 grid md:grid-cols-2 lg:grid-cols-3 gap-5 p-6">
+        {/* When the page is loading, display a skeleton loader */}
         {loading &&
           [...Array(9)].map((_, i) => (
             <div key={i} className="">
@@ -43,6 +44,7 @@ export default function Recipes() {
               </Card>
             </div>
           ))}
+        {/* When recipes are found, display them */}
         {!loading &&
           recipes.length != 0 &&
           recipes.map((recipe) => (
@@ -80,6 +82,7 @@ export default function Recipes() {
               </Link>
             </div>
           ))}
+        {/* When no recipes are found, display a message to the user */}
         {!loading && recipes.length == 0 && (
             <h1 className="fixed top-[50%] text-center font-extrabold text-2xl text-gray-400 w-6/12">
               Server Unreachable / No Recipes Found

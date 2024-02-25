@@ -9,7 +9,10 @@ function useRecipeAPI() {
 
 export { RecipeAPI, useRecipeAPI };
 
-function RecipeAPI({children}) {
+function RecipeAPI({ children }) {
+  const [method, setMethod] = useState("1");
+  const selectedIngredients = useRef(new Set());
+  const [selectedIngredientsArray, setSelectedIngredientsArray] = useState([]);
 
   const server = axios.create({
     baseURL:
@@ -18,12 +21,25 @@ function RecipeAPI({children}) {
         : "http://13.126.109.92:5000/api",
   });
 
-  const [method, setMethod] = useState("1");
-  const selectedIngredients = useRef(new Set());
-  const [selectedIngredientsArray, setSelectedIngredientsArray] = useState([]);
-
   async function getRecipes() {
-    return await server.post("/recipes", {
+    // API call to azure server for genAI
+    if (method == "3") {
+      const endpoint =
+        process.env.NEXT_PUBLIC_PHASE == "dev"
+        ? "http://127.0.0.1:4000/api/genai"
+        : "http://4.247.147.225:4000/api/genai";
+
+      return await axios.post(endpoint, {
+        ingredients: selectedIngredientsArray,
+      });
+    }
+    // API call to aws server for apriori and vector db
+    const endpoint =
+    process.env.NEXT_PUBLIC_PHASE == "dev"
+      ? "http://127.0.0.1:5000/api/recipes"
+      : "http://13.126.109.92:5000/api/recipes";
+
+    return await axios.post(endpoint, {
       ingredients: selectedIngredientsArray,
       method,
     });
@@ -35,7 +51,15 @@ function RecipeAPI({children}) {
 
   return (
     <RecipeAPIContext.Provider
-      value={{ getRecipes, getRecipe, setMethod, setSelectedIngredientsArray, method, selectedIngredients, selectedIngredientsArray}}
+      value={{
+        getRecipes,
+        getRecipe,
+        setMethod,
+        setSelectedIngredientsArray,
+        method,
+        selectedIngredients,
+        selectedIngredientsArray,
+      }}
     >
       {children}
     </RecipeAPIContext.Provider>
