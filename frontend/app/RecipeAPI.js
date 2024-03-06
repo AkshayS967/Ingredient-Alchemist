@@ -18,7 +18,7 @@ function RecipeAPI({ children }) {
     baseURL:
       process.env.NEXT_PUBLIC_PHASE == "dev"
         ? "http://127.0.0.1:5000/api"
-        : "http://13.126.109.92:5000/api",
+        : "http://3.7.68.129:5000/api",
   });
 
   async function getRecipes() {
@@ -37,7 +37,7 @@ function RecipeAPI({ children }) {
     const endpoint =
     process.env.NEXT_PUBLIC_PHASE == "dev"
       ? "http://127.0.0.1:5000/api/recipes"
-      : "http://13.126.109.92:5000/api/recipes";
+      : "http://3.7.68.129:5000/api/recipes";
 
     return await axios.post(endpoint, {
       ingredients: selectedIngredientsArray,
