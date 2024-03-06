@@ -1,4 +1,4 @@
-name: Deploy on AWS
+name: Deploy
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   pull_and_deploy_on_aws:
-    name: Git Pull and Deploy on AWS
+    name: Deploy on AWS
     runs-on: ubuntu-latest
     steps:
       - name: Git pull and restart processes
@@ -20,7 +20,7 @@ jobs:
             ./pull-and-restart-process.sh
   
   pull_and_deploy_on_azure:
-    name: Git Pull and Deploy on Azure
+    name: Deploy on Azure
     runs-on: ubuntu-latest
     steps:
       - name: Git pull and restart processes
