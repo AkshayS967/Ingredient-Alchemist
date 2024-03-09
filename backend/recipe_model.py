@@ -30,21 +30,26 @@ def establish_db_conn():
 conn, cursor = establish_db_conn()
 
 def get_recipes():
+    initialBaseSQL = "select * from recipe where img_url not like 'https://img.sndimg.com/food/image/upload/q_92,fl_progressive,w_1200,c_scale/v1/gk-static/fdc-new/img/fdc-shareGraphic.png'"
     if PHASE == 'dev':
-        cursor.execute("""select * from recipe""")
+        cursor.execute(initialBaseSQL)
     else:
-        cursor.execute("""select * from recipe limit 10000""")
+        cursor.execute(initialBaseSQL+'limit 10000')
     recipes = cursor.fetchall()
     return recipes
 
 data = get_recipes()
+import time
+start = time.process_time()
 recipes = [ dict(i) for i in data ]
+print(time.process_time() - start)
 for recipe in recipes:
     recipe['ingredients'] = ','.join(recipe['ingredients'])
 tfidf_vectorizer = TfidfVectorizer(stop_words='english')
 recipe_descriptions = [recipe['title'] + ' ' + recipe['ingredients'] for recipe in recipes]
 tfidf_matrix = tfidf_vectorizer.fit_transform(recipe_descriptions)
 
+baseSQL = "SELECT * FROM recipe WHERE calories BETWEEN %s AND %s AND carbohydrate BETWEEN %s AND %s AND protein BETWEEN %s AND %s AND fat BETWEEN %s AND %s AND cholesterol BETWEEN %s AND %s AND sodium BETWEEN %s AND %s AND sugar BETWEEN %s AND %s AND img_url not like 'https://img.sndimg.com/food/image/upload/q_92,fl_progressive,w_1200,c_scale/v1/gk-static/fdc-new/img/fdc-shareGraphic.png'"
 
 def powerset(iterable):
     s = list(iterable)
@@ -215,3 +220,44 @@ def get_recipe_by_name(name):
     except Exception as e:
         raise e
     return recipe
+
+def get_recommended_recipes_with_filter(ingredients, nutrition):
+    sqlParams = (
+        nutrition['calories'][0], nutrition['calories'][1],
+        nutrition['carbs'][0], nutrition['carbs'][1],
+        nutrition['protein'][0], nutrition['protein'][1],
+        nutrition['fat'][0], nutrition['fat'][1],
+        nutrition['cholesterol'][0], nutrition['cholesterol'][1],
+        nutrition['sodium'][0], nutrition['sodium'][1],
+        nutrition['sugar'][0], nutrition['sugar'][1]
+    )
+    try:
+        if PHASE == 'dev':
+            cursor.execute(baseSQL, sqlParams)
+        else:
+            cursor.execute(baseSQL+'limit 5000', sqlParams)
+        data = cursor.fetchall()
+        if data == []:
+           return []
+    except Exception as e:
+        raise e
+    
+    recipes = [ dict(i) for i in data ]
+    for recipe in recipes:
+        recipe['ingredients'] = ','.join(recipe['ingredients'])
+    tfidf_vectorizer = TfidfVectorizer(stop_words='english')
+    recipe_descriptions = [recipe['title'] + ' ' + recipe['ingredients'] for recipe in recipes]
+    tfidf_matrix = tfidf_vectorizer.fit_transform(recipe_descriptions)
+
+    user_input_ingredients = ','.join(ingredients)
+    user_input_tfidf = tfidf_vectorizer.transform([user_input_ingredients])
+    cosine_similarities = linear_kernel(user_input_tfidf, tfidf_matrix).flatten()
+    similar_recipe_indices = cosine_similarities.argsort()[::-1]
+    num_recommendations = 9
+    recommeded_recipes = []
+   
+    for i in range(min(num_recommendations, len(similar_recipe_indices))):
+        recipe_index = similar_recipe_indices[i]
+        recipe = recipes[recipe_index]
+        recommeded_recipes.append(recipe)
+    return recommeded_recipes

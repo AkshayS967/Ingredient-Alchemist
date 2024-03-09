@@ -1,27 +1,24 @@
 import { Card, Skeleton, ScrollShadow } from "@nextui-org/react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, memo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRecipeAPI } from "../RecipeAPI";
 
-export default function Recipes() {
-  const [recipes, setRecipes] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const { getRecipes, selectedIngredientsArray, method } = useRecipeAPI();
+function Recipes() {
+  
+  const { recipes, getRecipes, selectedIngredientsArray, method, loading, setLoading } = useRecipeAPI();
 
   useEffect(() => {
     setLoading(true);
-    getRecipes().then((res) => {
-      if (res.data.success == false) setRecipes([]);
-      else setRecipes(res.data);
+    getRecipes().then(() => {
       setLoading(false);
     });
   }, [method, selectedIngredientsArray]);
 
   return (
     <>
-      <h2 className="text-2xl font-bold text-center">Recipes</h2>
-      <ScrollShadow className="bg-white h-[47.5rem] overflow-scroll grid-cols-1 grid md:grid-cols-2 lg:grid-cols-3 gap-5 p-6">
+      <h2 className="mt-2 text-2xl font-bold text-center">Recipes</h2>
+      <ScrollShadow className="bg-white h-[49rem] overflow-scroll grid-cols-1 grid md:grid-cols-2 lg:grid-cols-3 gap-5 p-6">
         {/* When the page is loading, display a skeleton loader */}
         {loading &&
           [...Array(9)].map((_, i) => (
@@ -92,3 +89,5 @@ export default function Recipes() {
     </>
   );
 }
+
+export default memo(Recipes);

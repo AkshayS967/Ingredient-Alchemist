@@ -2,7 +2,6 @@ import { Providers } from "./providers";
 import "./globals.css";
 import { Inter } from "next/font/google";
 import Header from "./component/Header";
-import Footer from "./component/Footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,7 +17,6 @@ export default function RootLayout({ children }) {
         <Providers>
           <Header />
           <div className="min-h-[calc(100vh-5rem)] max-w-7xl mx-auto p-4">{children}</div>
-          <Footer />
         </Providers>
       </body>
     </html>
