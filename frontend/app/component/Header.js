@@ -1,10 +1,11 @@
 "use client";
+import { memo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Tabs, Tab } from "@nextui-org/react";
 import { useRecipeAPI } from "../RecipeAPI";
 
-export default function Header() {
+function Header() {
   const { method, setMethod } = useRecipeAPI();
 
   return (
@@ -38,3 +39,5 @@ export default function Header() {
     </header>
   );
 }
+
+export default memo(Header);

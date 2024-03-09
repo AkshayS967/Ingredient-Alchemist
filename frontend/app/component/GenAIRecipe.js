@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, memo } from "react";
 import { useRecipeAPI } from "../RecipeAPI";
 import { Skeleton } from "@nextui-org/react";
 
-export default function GenAIRecipe() {
+function GenAIRecipe() {
   const [recipe, setRecipe] = useState("");
   const [loading, setLoading] = useState(true);
   const { getRecipes } = useRecipeAPI();
@@ -54,3 +54,5 @@ export default function GenAIRecipe() {
     </div>
   );
 }
+
+export default memo(GenAIRecipe);

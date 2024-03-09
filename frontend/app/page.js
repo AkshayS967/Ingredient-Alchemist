@@ -1,22 +1,14 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
-import Checkbox from "./component/Checkbox.js";
+import { useState, useRef, useEffect, memo, useCallback } from "react";
 import Recipes from "./component/Recipes.js";
 import Sidebar from "./component/Sidebar.js";
+import NutritionPanel from "./component/NutritionPanel.js";
 import { Tabs, Tab, Card, CardBody, Button, Chip } from "@nextui-org/react";
 import { useRecipeAPI } from "./RecipeAPI.js";
 import GenAIRecipe from "./component/GenAIRecipe.js";
+import Image from "next/image.js";
 
-export default function Home() {
-  const ingredients ={ 
-    Fruits: [ "Apple", "Banana", "Orange", "Grapes", "Strawberry", "Mango", "Pineapple", "Kiwi", "Blueberry", "Lemon", "Lime", "Raspberry", "Watermelon", "Cherry", "Pear", "Apricot", "Peach", "Plum", "Cranberry", "Coconut", "Avocado", "Blackberry", "Pomegranate", "Papaya", "Fig", "Guava", "Passion Fruit", "Lychee", "Dragon Fruit", ],
-    Vegetables: [ "Carrot", "Broccoli", "Cucumber", "Spinach", "Tomato", "Bell Pepper", "Lettuce", "Zucchini", "Eggplant", "Cauliflower", "Green Beans", "Peas", "Radish", "Onion", "Garlic", "Sweet Potato", "Asparagus", "Mushroom", "Celery", "Cabbage", "Kale", "Pumpkin", "Brussels Sprouts", "Artichoke", "Beet", "Turnip", "Leek", "Okra", "Rutabaga", ],
-    Grains: [ "Wheat", "Rice", "Barley", "Quinoa", "Oats", "Corn", "Rye", "Bulgur", "Millet", "Buckwheat", "Amaranth", "Farro", "Sorghum", ],
-    Proteins: [ "Chicken", "Beef", "Pork", "Salmon", "Tuna", "Cod", "Shrimp", "Tofu", "Tempeh", "Lentils", "Black beans", "Kidney beans", "Chickpeas", "Eggs", "Turkey", "Quorn", "Duck", "Lamb", "Venison", ],
-    Dairy: [ "Milk", "Cheddar", "Mozzarella", "Parmesan", "Yogurt", "Butter", "Cream", "Cottage Cheese", "Sour Cream", "Cream Cheese", "Ricotta", "Feta", "Goat Cheese", "Mascarpone", ],
-    "Herbs and Spices": [ "Basil", "Parsley", "Cilantro", "Thyme", "Rosemary", "Oregano", "Mint", "Dill", "Sage", "Bay Leaves", "Chili Powder", "Paprika", "Cumin", "Turmeric", "Ginger", "Nutmeg", "Cloves", "Cardamom", "Allspice", "Coriander", ],
-    Condiments: [ "Ketchup", "Mustard", "Mayonnaise", "Soy Sauce", "BBQ Sauce", "Worcestershire Sauce", "Hot Sauce", "Honey", "Maple Syrup", "Balsamic Vinegar", "Apple Cider Vinegar", "Red Wine Vinegar", "White Wine Vinegar", "Salsa", "Pesto", "Tahini", "Fish Sauce", "Teriyaki Sauce", "Hoisin Sauce", ],
-  };
+function Home() {
   const {
     selectedIngredients,
     selectedIngredientsArray,
@@ -26,6 +18,7 @@ export default function Home() {
   const customInputRef = useRef(null);
   const [ingredientCount, setIngredientCount] = useState(0);
   const [genRecipe, setGenRecipe] = useState(false);
+  const [nutritionPanelOpen, setNutritionPanelOpen] = useState(false);
 
   // Reset GenAI Recipe on method change
   useEffect(() => {
@@ -45,12 +38,12 @@ export default function Home() {
     setSelectedIngredientsArray([...selectedIngredients.current]);
   }
 
-  function toggleIngredient(event) {
+  const toggleIngredient = useCallback((event) => {
     let ingredient = event.target.textContent;
     selectedIngredients.current.has(ingredient)
       ? deleteIngredient(ingredient)
       : addIngredient(ingredient);
-  }
+  }, []);
 
   function addIngredientFromCustomInput() {
     addIngredient(customInputRef.current.value);
@@ -64,8 +57,20 @@ export default function Home() {
   return (
     <main className="">
       <div className="flex gap-5">
-        <div className="flex-auto w-4/12 h-[44rem]">
-          <h2 className="text-2xl font-bold text-center">Ingredients</h2>
+        <div className="flex-auto w-4/12">
+          <div className="mb-4 relative flex items-center justify-center h-12 text-2xl font-bold text-center">
+            <span>Ingredients</span>
+            <div className={`${nutritionPanelOpen?'bg-red-100 border-red-500' : 'bg-gray-200'}  border-3 rounded-xl mr-1 p-0.5 cursor-pointer absolute right-0`}
+              onClick={() => setNutritionPanelOpen(!nutritionPanelOpen)}>
+              <Image
+                src="/Nutrition.png"
+                alt="nutrition"
+                width={35}
+                height={35}
+              />
+            </div>
+          </div>
+          <NutritionPanel isOpen={nutritionPanelOpen} />
           {/* Tabs to toggle between predefined and custom ingredients */}
           <Tabs
             className="grid mt-2 px-1"
@@ -78,19 +83,7 @@ export default function Home() {
           >
             {/* Predefined Ingredients */}
             <Tab key="predefined" title="Predefined">
-              <Sidebar category={Object.keys(ingredients)}>
-                {Object.entries(ingredients).map(([category, items]) =>
-                  items.map((item) => (
-                    <Checkbox
-                      key={item}
-                      className="m-1 cursor-pointer"
-                      onClick={toggleIngredient}
-                    >
-                      {item}
-                    </Checkbox>
-                  ))
-                )}
-              </Sidebar>
+              <Sidebar toggleIngredient={toggleIngredient}/>
             </Tab>
             {/* Custom Ingredients */}
             <Tab key="custom" title="Custom">
@@ -145,7 +138,7 @@ export default function Home() {
                 <Button
                   color="primary"
                   variant="flat"
-                  className="font-bold bg-red-100 text-red-400 w-4/12"
+                  className="font-bold bg-red-100 text-red-400 w-4/12 mt-6"
                   onClick={() =>
                     setGenRecipe(true)
                   }
@@ -161,3 +154,5 @@ export default function Home() {
     </main>
   );
 }
+
+export default memo(Home);
