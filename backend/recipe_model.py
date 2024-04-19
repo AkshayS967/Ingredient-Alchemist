@@ -30,7 +30,7 @@ def establish_db_conn():
 conn, cursor = establish_db_conn()
 
 def get_recipes():
-    initialBaseSQL = "select * from recipe where img_url not like 'https://img.sndimg.com/food/image/upload/q_92,fl_progressive,w_1200,c_scale/v1/gk-static/fdc-new/img/fdc-shareGraphic.png'"
+    initialBaseSQL = "select * from recipe where img_url not like 'https://img.sndimg.com/food/image/upload/q_92,fl_progressive,w_1200,c_scale/v1/gk-static/fdc-new/img/fdc-shareGraphic.png' and not like 'https://food.fnr.sndimg.com/content/dam/images/food/editorial/homepage/fn-feature.jpg.rend.hgtvcom.826.620.suffix/1474463768097.jpeg'"
     if PHASE == 'dev':
         cursor.execute(initialBaseSQL)
     else:
