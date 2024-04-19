@@ -1,9 +1,9 @@
 from transformers import AutoModelForSeq2SeqLM
 from transformers import AutoTokenizer
 
-MODEL_NAME_OR_PATH = "SpamAcc/t5base-fine-tuned"
-tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME_OR_PATH)
-model = AutoModelForSeq2SeqLM.from_pretrained(MODEL_NAME_OR_PATH)
+model = "AkshayPM/ingredient_to_recipe"
+tokenizer = AutoTokenizer.from_pretrained(model)
+model = AutoModelForSeq2SeqLM.from_pretrained(model)
 
 generation_kwargs = {
     "max_length": 512,

@@ -1,6 +1,5 @@
 import { Card, Skeleton, ScrollShadow } from "@nextui-org/react";
-import { useEffect, useState, memo } from "react";
-import Image from "next/image";
+import { useEffect, memo } from "react";
 import Link from "next/link";
 import { useRecipeAPI } from "../RecipeAPI";
 
@@ -11,6 +10,8 @@ function Recipes() {
   useEffect(() => {
     setLoading(true);
     getRecipes().then(() => {
+      setLoading(false);
+    }).catch(() => {
       setLoading(false);
     });
   }, [method, selectedIngredientsArray]);

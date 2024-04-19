@@ -13,11 +13,11 @@ def get_recipes():
         if data['filter'] == True:
             res = get_recommended_recipes_with_filter(data['ingredients'], data['nutrition'])
         elif data['method'] == '1':
+            print(data['ingredients'])
             res = get_recommended_recipes(data['ingredients'])
         elif data['method'] == '2':
-            res = get_recipe_vector(data['ingredients'])
-        
-        return res
+            res = get_recipe_vector(data['ingredients'], data['quantityEnabled'])
+        return res, 200
     
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500

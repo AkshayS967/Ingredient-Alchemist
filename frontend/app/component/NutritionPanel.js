@@ -1,26 +1,13 @@
 import { Slider, Button } from "@nextui-org/react";
 import { useRecipeAPI } from "../RecipeAPI";
-import { memo } from "react";
+import { memo, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 function NutritionPanel({ isOpen }) {
   const {
-    setCalories,
-    setCarbs,
-    setProtein,
-    setFat,
-    setCholesterol,
-    setSodium,
-    setSugar,
-    calories,
-    carbs,
-    protein,
-    fat,
-    cholesterol,
-    sodium,
-    sugar,
-    getRecipes,
-    setLoading,
+    updateNutritionFilter,
+    applyNutritionFilter,
+    clearNutritionFilter,
   } = useRecipeAPI();
     const sliderColor = "foreground";
     const sliderSize = "md";
@@ -31,14 +18,35 @@ function NutritionPanel({ isOpen }) {
         thumb: "bg-gray-200",
         filler: "bg-red-300",
     };
+    const [calories, setCalories] = useState([0, 3000]);
+    const [carbs, setCarbs] = useState([0, 500]);
+    const [protein, setProtein] = useState([0, 250]);
+    const [fat, setFat] = useState([0, 250]);
+    const [cholesterol, setCholesterol] = useState([0, 750]);
+    const [sodium, setSodium] = useState([0, 1000]);
+    const [sugar, setSugar] = useState([0, 750]);
+
+    useEffect(() => {
+      updateNutritionFilter({calories, carbs, protein, fat, cholesterol, sodium, sugar});
+    }, [calories, carbs, protein, fat, cholesterol, sodium, sugar])
+
+    function resetSliders() {
+      setCalories([0, 3000]);
+      setCarbs([0, 500]);
+      setProtein([0, 250]);
+      setFat([0, 250]);
+      setCholesterol([0, 750]);
+      setSodium([0, 1000]);
+      setSugar([0, 750]);
+    }
 
   return (
     <div>
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ x: 0, opacity: 0, height: 0 }}
-            animate={{ x: 0, opacity: 1, height: "auto" }}
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
             transition={{ duration: 0.2 }}
             exit={{ opacity: 0, transition: { duration: 0.2 }, height: 0}}
           >
@@ -114,19 +122,25 @@ function NutritionPanel({ isOpen }) {
                     onChange={setSugar}
                     classNames={sliderStyle}
                 />
-                <Button
-                  color="primary"
-                  variant="flat"
-                  className="mt-5 font-bold bg-red-100 text-red-400 w-full mx-auto"
-                  onClick={() => {
-                    setLoading(true)
-                    getRecipes(true).then(
-                        () => setLoading(false)
-                    )
-                }}
-                >
-                  Apply
-                </Button>
+                  <div className="mt-5 flex gap-4">
+                    <Button
+                      color="primary"
+                      className="font-bold w-full mx-auto"
+                      onClick={applyNutritionFilter}
+                    >
+                      Apply
+                    </Button>
+                    <Button
+                      color="secondary"
+                      className="font-bold w-full mx-auto"
+                      onClick={() => {
+                        clearNutritionFilter()
+                        resetSliders()
+                      }}
+                    >
+                      Clear
+                    </Button>
+                  </div>
                 </div>
             </div>
           </motion.div>
