@@ -3,19 +3,16 @@ import { useRecipeAPI } from "../RecipeAPI";
 import { Skeleton } from "@nextui-org/react";
 
 function GenAIRecipe() {
-  const [recipe, setRecipe] = useState("");
   const [loading, setLoading] = useState(true);
-  const { getRecipes } = useRecipeAPI();
+  const { genAIRecipe, getRecipes } = useRecipeAPI();
   useEffect(() => {
-    getRecipes().then((res) => {
-      if (res.data.success == false) setRecipe("");
-      else setRecipe(res.data);
+    getRecipes().then(() => {
       setLoading(false);
     });
   }, []);
 
   return (
-    <div className="w-full">
+    <div className="w-full mt-20">
       {loading && (
         <div>
           {/* Title */}
@@ -46,11 +43,28 @@ function GenAIRecipe() {
           </div>
         </div>
       )}
-      {!loading && (
+      { !loading && genAIRecipe && 
         <div>
-          <div>{recipe}</div>
+        {/* Title */}
+        <h1 className="text-2xl font-bold">{genAIRecipe.title}</h1>
+        {/* Ingredients */}
+        <div className="mt-10">
+          <h2 className="text-lg font-bold">Ingredients</h2>
+          <ul>
+            {genAIRecipe.ingredients.map((ingredient) => (
+              <li key={ingredient}>{ingredient}</li>
+            ))}
+          </ul>
         </div>
-      )}
+        {/* Instructions */}
+        <div className="mt-8">
+          <h2 className="text-lg font-bold">Instructions</h2>
+          <p>{genAIRecipe.instructions}</p>
+        </div>
+      </div> }
+      { !loading && !genAIRecipe &&
+          <div>Failed to generate recipe</div>
+        }
     </div>
   );
 }
