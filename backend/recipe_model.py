@@ -246,7 +246,7 @@ def get_recommended_recipes_with_filter(ingredients, nutrition):
     for recipe in recipes:
         recipe['ingredients'] = ','.join(recipe['ingredients'])
     tfidf_vectorizer = TfidfVectorizer(stop_words='english')
-    recipe_descriptions = [recipe['title'] + ' ' + recipe['ingredients'] for recipe in recipes]
+    recipe_descriptions = [recipe['ingredients'] for recipe in recipes]
     tfidf_matrix = tfidf_vectorizer.fit_transform(recipe_descriptions)
 
     user_input_ingredients = ','.join(ingredients)

@@ -12,6 +12,7 @@ export { RecipeAPI, useRecipeAPI };
 function RecipeAPI({ children }) {
   const [method, setMethod] = useState("1");
   const [recipes, setRecipes] = useState([]);
+  const [genAIRecipe, setGenAIRecipe] = useState(null);
   const filter = useRef(false);
   const selectedIngredients = useRef(new Map());
   const [selectedIngredientsArray, setSelectedIngredientsArray] = useState([]);
@@ -47,6 +48,7 @@ function RecipeAPI({ children }) {
 
   async function getRecipes() {
     if (selectedIngredientsArray.length == 0) return { data: [] };
+    setGenAIRecipe(null);
     // API call to azure server for genAI
     if (method == "3") {
       const endpoint =
@@ -57,8 +59,7 @@ function RecipeAPI({ children }) {
       const res = await axios.post(endpoint, {
         ingredients: selectedIngredientsArray,
       });
-      if (res.data.success == false) setRecipes([]);
-      else setRecipes(res.data);
+      if (res.status == 200) setGenAIRecipe(res.data);
       return;
     }
     // API call to aws server for apriori and vector db
@@ -92,6 +93,7 @@ function RecipeAPI({ children }) {
         applyNutritionFilter,
         clearNutritionFilter,
         setCustomQuantityEnabled,
+        genAIRecipe,
         method,
         recipes,
         selectedIngredients,
